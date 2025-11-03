@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/angular/standalone';
-import { LottieSplashScreen } from '../../../../dist/esm';
+import { LottieSplashScreen, LottieSplashScreenShowOptions } from '../../../../dist/esm';
 
 @Component({
   selector: 'app-home',
@@ -12,6 +12,10 @@ export class HomePage {
   constructor() {}
 
   protected showSplashScreen(): void {
-    LottieSplashScreen.show({ animation: 'public/assets/lottie-runtime.json' });
+    const options: LottieSplashScreenShowOptions = {
+      animation: 'public/assets/lottie-runtime.json',
+      isDarkMode: true
+    };
+    LottieSplashScreen.show(options);
   }
 }

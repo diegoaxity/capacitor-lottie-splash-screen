@@ -253,9 +253,12 @@ This event is triggered once the animation finishes and the overlay is removed.
 
 #### LottieSplashScreenShowOptions
 
-| Prop            | Type                |
-| --------------- | ------------------- |
-| **`animation`** | <code>string</code> |
+Options for showing the Lottie splash screen animation programmatically.
+
+| Prop             | Type                 |
+| ---------------- | -------------------- |
+| **`animation`**  | <code>string</code>  |
+| **`isDarkMode`** | <code>boolean</code> |
 
 
 #### PluginListenerHandle

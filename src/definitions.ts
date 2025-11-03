@@ -96,6 +96,24 @@ export interface LottieSplashScreenPlugin {
     listenerFunc: () => void
   ): Promise<PluginListenerHandle>;
 }
+/**
+ * Options for showing the Lottie splash screen animation programmatically.
+ * 
+ * @param animation The path to the lottie file.
+ * @param isDarkMode Optional flag to indicate if dark mode styling from capacitor.config should be applied.
+ *  
+ * @example
+ * ```ts
+ * const options: LottieSplashScreenShowOptions = {
+ *   animation: 'public/assets/lottie-runtime.json',
+ *   isDarkMode: true
+ * };
+ * LottieSplashScreen.show(options);
+ * ```
+ * 
+ * @since 7.3.0
+ */
 export interface LottieSplashScreenShowOptions {
   animation: string;
+  isDarkMode?: boolean;
 }

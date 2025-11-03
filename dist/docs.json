@@ -153,8 +153,25 @@
     {
       "name": "LottieSplashScreenShowOptions",
       "slug": "lottiesplashscreenshowoptions",
-      "docs": "",
-      "tags": [],
+      "docs": "Options for showing the Lottie splash screen animation programmatically.",
+      "tags": [
+        {
+          "text": "animation The path to the lottie file.",
+          "name": "param"
+        },
+        {
+          "text": "isDarkMode Optional flag to indicate if dark mode styling from capacitor.config should be applied.",
+          "name": "param"
+        },
+        {
+          "text": "```ts\nconst options: LottieSplashScreenShowOptions = {\n  animation: 'public/assets/lottie-runtime.json',\n  isDarkMode: true\n};\nLottieSplashScreen.show(options);\n```",
+          "name": "example"
+        },
+        {
+          "text": "7.3.0",
+          "name": "since"
+        }
+      ],
       "methods": [],
       "properties": [
         {
@@ -163,6 +180,13 @@
           "docs": "",
           "complexTypes": [],
           "type": "string"
+        },
+        {
+          "name": "isDarkMode",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean | undefined"
         }
       ]
     },
