@@ -86,7 +86,7 @@ public class LottieSplashScreenPlugin extends Plugin {
 
         String animation = this.getConfig().getString("animationLight", "");
         if (animation.isEmpty()) {
-            Log.e(LottieSplashScreen.TAG, "Animation must be provided in ionic.config.ts|json");
+            Log.e(LottieSplashScreen.TAG, "Animation must be provided in capacitor.config.ts|json");
             return;
         }
         String backgroundColor = this.getConfig().getString("backgroundLight", "#FFFFFF");

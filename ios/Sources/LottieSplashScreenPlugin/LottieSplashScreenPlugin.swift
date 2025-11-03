@@ -56,7 +56,7 @@ public class LottieSplashScreenPlugin: CAPPlugin, CAPBridgedPlugin {
         if isEnabled {
             var animation = getConfig().getString("animationLight", "")
             if (animation == ""){
-                log("Animation must be provided in ionic.config.ts|json")
+                log("Animation must be provided in capacitor.config.ts|json")
                 return
             }
             var backgroundColor = getConfig().getString("backgroundLight", "#FFFFFF")
