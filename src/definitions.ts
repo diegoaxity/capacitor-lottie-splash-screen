@@ -40,7 +40,7 @@ export interface LottieSplashScreenPlugin {
    *
    * @since 7.0.0
    */
-  show(): void;
+  show(options?: LottieSplashScreenShowOptions): void;
 
   /**
    * Hide the splash screen immediately, skipping the animation completion.
@@ -95,4 +95,7 @@ export interface LottieSplashScreenPlugin {
     eventName: 'onAnimationEnd',
     listenerFunc: () => void
   ): Promise<PluginListenerHandle>;
+}
+export interface LottieSplashScreenShowOptions {
+  animation: string;
 }
