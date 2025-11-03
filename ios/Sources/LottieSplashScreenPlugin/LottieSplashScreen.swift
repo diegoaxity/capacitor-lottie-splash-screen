@@ -171,6 +171,7 @@ extension AnimationEventListener {
 
     private func isSystemDarkMode() -> Bool {
         if #available(iOS 13.0, *), UITraitCollection.current.userInterfaceStyle == .dark {
+            log("Dark mode detected. Using dark animation and color")
             return true
         }
         return false
