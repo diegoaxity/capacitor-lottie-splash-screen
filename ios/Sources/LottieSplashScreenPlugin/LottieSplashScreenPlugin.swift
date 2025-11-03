@@ -26,7 +26,8 @@ public class LottieSplashScreenPlugin: CAPPlugin, CAPBridgedPlugin {
 
     /// JS → Native: Show the splash screen again
     @objc func show(_ call: CAPPluginCall) {
-        implementation.show();
+        let animationOverride = call.getString("animation");
+        implementation.show(animationOverride: animationOverride);
         call.resolve();
     }
 

@@ -67,8 +67,12 @@ extension AnimationEventListener {
     }
     
     /// Show the splash screen again programmatically
-    @objc public func show() -> Void {
+    @objc public func show(animationOverride: String?) -> Void {
         DispatchQueue.main.async {
+            if animationOverride != nil && animationOverride != "" {
+                self.lottiePath = animationOverride
+            }
+
             guard let containerView = self.containerView,
                   let path = self.lottiePath,
                   let filename = path.components(separatedBy: ".").first else {
@@ -122,7 +126,7 @@ extension AnimationEventListener {
         }
 
         // Initially display the splash screen.
-        self.show()
+        self.show(animationOverride: nil)
     }
 
     // MARK: - Internal Methods
