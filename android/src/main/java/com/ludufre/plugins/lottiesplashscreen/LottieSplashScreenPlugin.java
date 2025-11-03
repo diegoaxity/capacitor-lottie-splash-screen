@@ -24,7 +24,12 @@ public class LottieSplashScreenPlugin extends Plugin {
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void show(PluginCall call) {
         String animationOverride = call.getString("animation");
-        ShowLottieSplashScreenDialog(animationOverride);
+        if (call.getBoolean("isDarkMode") != null) {
+            boolean isDarkModeOverride = Boolean.TRUE.equals(call.getBoolean("isDarkMode"));
+            ShowLottieSplashScreenDialog(animationOverride, isDarkModeOverride);
+        } else {
+            ShowLottieSplashScreenDialog(animationOverride, null);
+        }
         call.resolve();
     }
 
@@ -61,7 +66,7 @@ public class LottieSplashScreenPlugin extends Plugin {
         Log.i(LottieSplashScreen.TAG, "Started");
 
         if (isEnabled) {
-            ShowLottieSplashScreenDialog(null);
+            ShowLottieSplashScreenDialog(null, null);
         } else {
             Log.i(LottieSplashScreen.TAG, "Not enabled");
         }
@@ -80,8 +85,9 @@ public class LottieSplashScreenPlugin extends Plugin {
     /**
      * Displays the splash dialog with options from capacitor.config.
      * @param animationOverride Optional animation path to override the configured one.
+     * @param isDarkModeOverride Optional dark mode override.
      */
-    private void ShowLottieSplashScreenDialog(String animationOverride) {
+    private void ShowLottieSplashScreenDialog(String animationOverride, Boolean isDarkModeOverride) {
         Context context = this.getContext();
 
         String animation = this.getConfig().getString("animationLight", "");
@@ -102,7 +108,7 @@ public class LottieSplashScreenPlugin extends Plugin {
             loopAnimation = false;
         }
 
-        if (isDarkMode()) {
+        if (isDarkModeOverride == null ? isDarkMode() : isDarkModeOverride) {
             Log.i(LottieSplashScreen.TAG, "Dark mode detected. Using dark animation and color");
             if (!Objects.equals(darkAnimation, "")) {
                 animation = darkAnimation;
