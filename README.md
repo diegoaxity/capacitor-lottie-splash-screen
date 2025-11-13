@@ -147,7 +147,7 @@ LottieSplashScreen.addListener('onAnimationEnd', () => {
 <docgen-index>
 
 * [`appLoaded()`](#apploaded)
-* [`show()`](#show)
+* [`show(...)`](#show)
 * [`hide()`](#hide)
 * [`isAnimating()`](#isanimating)
 * [`addListener('onAnimationEnd', ...)`](#addlisteneronanimationend-)
@@ -175,15 +175,19 @@ If the splash is configured to loop, this will forcibly stop it.
 --------------------
 
 
-### show()
+### show(...)
 
 ```typescript
-show() => void
+show(options?: LottieSplashScreenShowOptions | undefined) => void
 ```
 
 Programmatically show the splash screen animation again.
 
 This is useful for scenarios like restarting the splash for a specific action or navigation flow.
+
+| Param         | Type                                                                                    |
+| ------------- | --------------------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#lottiesplashscreenshowoptions">LottieSplashScreenShowOptions</a></code> |
 
 **Since:** 7.0.0
 
@@ -245,6 +249,16 @@ This event is triggered once the animation finishes and the overlay is removed.
 
 
 ### Interfaces
+
+
+#### LottieSplashScreenShowOptions
+
+Options for showing the Lottie splash screen animation programmatically.
+
+| Prop             | Type                 |
+| ---------------- | -------------------- |
+| **`animation`**  | <code>string</code>  |
+| **`isDarkMode`** | <code>boolean</code> |
 
 
 #### PluginListenerHandle

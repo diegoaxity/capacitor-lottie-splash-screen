@@ -42,6 +42,11 @@ extension AnimationEventListener {
     private var lottiePath: String?
     private var backgroundColor: UIColor?
 
+    private var lottiePathLight: String?
+    private var lottiePathDark: String?
+    private var backgroundColorLight: UIColor?
+    private var backgroundColorDark: UIColor?
+
     public typealias AnimationEventListenerCallback = (AnimationEventListener) -> Void
     
     @objc public var onAnimationEvent: AnimationEventListenerCallback?
@@ -61,22 +66,67 @@ extension AnimationEventListener {
         }
     }
 
+    /// Configure the splash screen with necessary parameters
+    @objc public func configure(
+        containerView: UIView,
+        animationLight: String,
+        animationDark: String?,
+        backgroundLightHex: String,
+        backgroundDarkHex: String?,
+        autoHide: Bool,
+        loop: Bool
+    ) {
+        self.containerView = containerView
+        self.lottiePathLight = animationLight
+        self.lottiePathDark = animationDark
+        self.backgroundColorLight = Self.color(fromHex: backgroundLightHex)
+        self.backgroundColorDark = backgroundDarkHex != nil ? Self.color(fromHex: backgroundDarkHex!) : nil
+        self.autoHide = autoHide
+        self.loopMode = loop ? .loop : .playOnce
+    }
+
     /// Hide the splash screen immediately
     @objc public func hide() -> Void {
         hideSplashScreen()
     }
     
-    /// Show the splash screen again programmatically
-    @objc public func show() -> Void {
+    /// Show the splash screen with optional animation override and without dark mode override
+    @objc public func show(animationOverride: String?) -> Void {
+        self.show(animationOverride: animationOverride, isDarkModeOverride: nil)
+    }
+
+    /// Show the splash screen with optional animation and dark mode overrides
+    @objc public func show(animationOverride: String?, isDarkModeOverride: NSNumber?) -> Void {
         DispatchQueue.main.async {
+            let useDarkMode = isDarkModeOverride?.boolValue ?? self.isSystemDarkMode()
+
+            var selectedPath: String?
+            var selectedBackgroundColor: UIColor?
+
+            if let override = animationOverride, !override.isEmpty {
+                selectedPath = override
+                selectedBackgroundColor = useDarkMode ? (self.backgroundColorDark ?? self.backgroundColorLight) : self.backgroundColorLight
+            } else {
+                if useDarkMode, let darkPath = self.lottiePathDark, !darkPath.isEmpty {
+                    selectedPath = darkPath
+                    selectedBackgroundColor = self.backgroundColorDark
+                } else {
+                    selectedPath = self.lottiePathLight
+                    selectedBackgroundColor = self.backgroundColorLight
+                }
+            }
+
             guard let containerView = self.containerView,
-                  let path = self.lottiePath,
+                  let path = selectedPath,
                   let filename = path.components(separatedBy: ".").first else {
                 return
             }
-            
+
+            self.lottiePath = path
+            self.backgroundColor = selectedBackgroundColor
+
             self.isAnimationEnded = false
-            
+
             // Set up background
             self.backgroundView = UIView()
             self.backgroundView!.backgroundColor = self.backgroundColor
@@ -109,29 +159,33 @@ extension AnimationEventListener {
         }
     }
 
-    /// Initialize the splash screen with animation and color configuration
-    public func loadLottie(view: UIView?, path: String?, backgroundColor: String? = nil, autoHide: Bool = false, loopMode: Bool = false) {
+    // MARK: - Helpers
 
-        // Save the container and asset information for re-showing the splash later.
-        self.containerView = view
-        self.lottiePath = path
-        self.backgroundColor = UIColor.capacitor.color(fromHex: backgroundColor!)
-        self.autoHide = autoHide
-        if(loopMode == true){
-            self.loopMode = .loop
-        }
-
-        // Initially display the splash screen.
-        self.show()
-    }
-
-    // MARK: - Internal Methods
-
-    func hideSplashScreen() {
+    private func hideSplashScreen() {
         log("Hiding splash screen")
         DispatchQueue.main.async {
             self.animationView?.removeFromSuperview()
             self.backgroundView?.removeFromSuperview()
         }
+    }
+
+    private func isSystemDarkMode() -> Bool {
+        if #available(iOS 13.0, *), UITraitCollection.current.userInterfaceStyle == .dark {
+            log("Dark mode detected. Using dark animation and color")
+            return true
+        }
+        return false
+    }
+
+    private static func color(fromHex hex: String) -> UIColor {
+        var c = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        if c.hasPrefix("#") { c.removeFirst() }
+        guard c.count == 6, let rgb = Int(c, radix: 16) else { return .white }
+        return UIColor(
+            red: CGFloat((rgb >> 16) & 0xFF) / 255.0,
+            green: CGFloat((rgb >> 8) & 0xFF) / 255.0,
+            blue: CGFloat(rgb & 0xFF) / 255.0,
+            alpha: 1.0
+        )
     }
 }

@@ -90,20 +90,15 @@ public class LottieSplashScreen {
      */
     public void ShowLottieSplashScreenDialog(Context context, String lottiePath, String backgroundColor, boolean autoHide, boolean loopAnimation) {
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (dialog != null) {
-                lottieAnimationView.playAnimation();
-                dialog.show();
-                return;
-            }
-
             this.autoHide = autoHide;
             this.loopMode = loopAnimation;
             this.backgroundColor = backgroundColor;
 
-            dialog = new Dialog(context, R.style.AppTheme_LottieSplashScreen);
-
-            dialog.setContentView(R.layout.activity_lottie_splash_screen);
-            dialog.setCancelable(false);
+            if (dialog == null) {
+                dialog = new Dialog(context, R.style.AppTheme_LottieSplashScreen);
+                dialog.setContentView(R.layout.activity_lottie_splash_screen);
+                dialog.setCancelable(false);
+            }
 
             loadLottie(dialog, lottiePath);
 

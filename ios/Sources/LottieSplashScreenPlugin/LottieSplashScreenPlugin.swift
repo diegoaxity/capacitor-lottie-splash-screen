@@ -26,7 +26,9 @@ public class LottieSplashScreenPlugin: CAPPlugin, CAPBridgedPlugin {
 
     /// JS → Native: Show the splash screen again
     @objc func show(_ call: CAPPluginCall) {
-        implementation.show();
+        let animationOverride = call.getString("animation");
+        let isDarkModeOverride: NSNumber? = call.getBool("isDarkMode").map { NSNumber(value: $0) };
+        implementation.show(animationOverride: animationOverride, isDarkModeOverride: isDarkModeOverride);
         call.resolve();
     }
 
@@ -53,46 +55,35 @@ public class LottieSplashScreenPlugin: CAPPlugin, CAPBridgedPlugin {
         log("Started")
         
         if isEnabled {
-            var animation = getConfig().getString("animationLight", "")
-            if (animation == ""){
-                log("Animation must be provided in ionic.config.ts|json")
+            let animationLight = getConfig().getString("animationLight", "")
+            if animationLight == "" {
+                log("Animation must be provided in capacitor.config.ts|json")
                 return
             }
-            var backgroundColor = getConfig().getString("backgroundLight", "#FFFFFF")
-            
-            let darkAnimation = getConfig().getString("animationDark", "")
-            let darkBackgroundColor = getConfig().getString("backgroundDark", "#000000")
-            
+            let backgroundLight = getConfig().getString("backgroundLight", "#FFFFFF")
+            let animationDark = getConfig().getString("animationDark", "")
+            let backgroundDark = getConfig().getString("backgroundDark", "#000000")
             let autoHide = getConfig().getBoolean("autoHide", false)
-            var loopAnimation =  getConfig().getBoolean("loop", false)
-            
+            var loopAnimation = getConfig().getBoolean("loop", false)
+
             if autoHide, loopAnimation {
                 log("autoHide and loop cannot be true at the same time. Loop will be disabled.")
                 loopAnimation = false
             }
-            
-            if #available(iOS 13.0, *), UITraitCollection.current.userInterfaceStyle == .dark {
-                log("Dark mode detected. Using dark animation and color")
-                if darkAnimation != "" {
-                    animation = darkAnimation
-                }
-                if darkBackgroundColor != "" {
-                    backgroundColor = darkBackgroundColor
-                }
+
+            if let container = self.bridge?.viewController?.view {
+                implementation.configure(
+                    containerView: container,
+                    animationLight: animationLight!,
+                    animationDark: animationDark!.isEmpty ? nil : animationDark,
+                    backgroundLightHex: backgroundLight!,
+                    backgroundDarkHex: backgroundDark!,
+                    autoHide: autoHide,
+                    loop: loopAnimation
+                )
+                implementation.show(animationOverride: nil, isDarkModeOverride: nil)
             }
-            
-            log("Animation path:", animation)
-            log("Background color:", backgroundColor)
-            log("Auto Hide:", autoHide)
-            log("Loop Animation:", loopAnimation)
-            
-            implementation.loadLottie(
-                view: self.bridge?.viewController?.view,
-                path: animation,
-                backgroundColor: backgroundColor,
-                autoHide: autoHide,
-                loopMode: loopAnimation)
-        }else{
+        } else {
             log("Not enabled")
         }
         implementation.onAnimationEvent = onAnimationEvent

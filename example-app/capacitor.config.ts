@@ -7,8 +7,8 @@ const config: CapacitorConfig = {
   plugins: {
     LottieSplashScreen: {
       enabled: true, // Can be disabled and called manually with .show() & .hide(). Can coexist with @capacitor/splash-screen
-      animationLight: 'public/assets/light.json', // Required!
-      animationDark: 'public/assets/light.json', // Optional (default: same as animationLight)
+      animationLight: 'public/assets/lottie-startup.json', // Required!
+      animationDark: 'public/assets/lottie-startup.json', // Optional (default: same as animationLight)
       backgroundLight: '#FF0000', // Optional (default: #FFFFFF)
       backgroundDark: '#00FF00', // Optional (default: #000000)
       autoHide: false, // Hide after animation ends - Optional (default: false)

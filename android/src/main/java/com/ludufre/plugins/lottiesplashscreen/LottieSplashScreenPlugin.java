@@ -23,7 +23,13 @@ public class LottieSplashScreenPlugin extends Plugin {
 
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void show(PluginCall call) {
-        ShowLottieSplashScreenDialog();
+        String animationOverride = call.getString("animation");
+        if (call.getBoolean("isDarkMode") != null) {
+            boolean isDarkModeOverride = Boolean.TRUE.equals(call.getBoolean("isDarkMode"));
+            ShowLottieSplashScreenDialog(animationOverride, isDarkModeOverride);
+        } else {
+            ShowLottieSplashScreenDialog(animationOverride, null);
+        }
         call.resolve();
     }
 
@@ -60,7 +66,7 @@ public class LottieSplashScreenPlugin extends Plugin {
         Log.i(LottieSplashScreen.TAG, "Started");
 
         if (isEnabled) {
-            ShowLottieSplashScreenDialog();
+            ShowLottieSplashScreenDialog(null, null);
         } else {
             Log.i(LottieSplashScreen.TAG, "Not enabled");
         }
@@ -78,19 +84,21 @@ public class LottieSplashScreenPlugin extends Plugin {
 
     /**
      * Displays the splash dialog with options from capacitor.config.
+     * @param animationOverride Optional animation path to override the configured one.
+     * @param isDarkModeOverride Optional dark mode override.
      */
-    private void ShowLottieSplashScreenDialog() {
+    private void ShowLottieSplashScreenDialog(String animationOverride, Boolean isDarkModeOverride) {
         Context context = this.getContext();
 
         String animation = this.getConfig().getString("animationLight", "");
-        if (animation == "") {
-            Log.e(LottieSplashScreen.TAG, "Animation must be provided in ionic.config.ts|json");
+        if (animation.isEmpty()) {
+            Log.e(LottieSplashScreen.TAG, "Animation must be provided in capacitor.config.ts|json");
             return;
         }
         String backgroundColor = this.getConfig().getString("backgroundLight", "#FFFFFF");
 
         String darkAnimation = getConfig().getString("animationDark", "");
-        String darkBackgroundcolor = getConfig().getString("backgroundDark", "#000000");
+        String darkBackgroundColor = getConfig().getString("backgroundDark", "#000000");
 
         boolean autoHide = getConfig().getBoolean("autoHide", false);
         boolean loopAnimation = getConfig().getBoolean("loop", false);
@@ -100,14 +108,18 @@ public class LottieSplashScreenPlugin extends Plugin {
             loopAnimation = false;
         }
 
-        if (isDarkMode()) {
+        if (isDarkModeOverride == null ? isDarkMode() : isDarkModeOverride) {
             Log.i(LottieSplashScreen.TAG, "Dark mode detected. Using dark animation and color");
             if (!Objects.equals(darkAnimation, "")) {
                 animation = darkAnimation;
             }
-            if (!Objects.equals(darkBackgroundcolor, "")) {
-                backgroundColor = darkBackgroundcolor;
+            if (!Objects.equals(darkBackgroundColor, "")) {
+                backgroundColor = darkBackgroundColor;
             }
+        }
+
+        if (animationOverride != null && !animationOverride.isEmpty()) {
+            animation = animationOverride;
         }
 
         Log.i(LottieSplashScreen.TAG, "Animation path: " + animation);
