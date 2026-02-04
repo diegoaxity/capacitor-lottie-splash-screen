@@ -6,7 +6,7 @@ let package = Package(
     platforms: [.iOS(.v15)],
     products: [
         .library(
-            name: "CapacitorLottieSplashScreenPlugin",
+            name: "CapacitorLottieSplashScreen",
             targets: ["LottieSplashScreenPlugin"])
     ],
     dependencies: [
